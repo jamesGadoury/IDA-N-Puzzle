@@ -48,7 +48,7 @@ void display_board(_2D goal)
 }
 void display_board(Node curr)
 {
-    cout << "heuristic: " << curr.h << endl;
+    //cout << "heuristic: " << curr.h << endl;
     for (int i = 0; i < curr.board.size(); i++)
     {
         for (int j = 0; j < curr.board.size(); j++)
