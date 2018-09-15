@@ -4,7 +4,7 @@
 #include <stack>
 #include <array>
 #include <unordered_map>
-#include <bits/stdc++.h>
+#include <string>
 
 using namespace std;
 
@@ -48,7 +48,6 @@ void display_board(_2D goal)
 }
 void display_board(Node curr)
 {
-    //cout << "heuristic: " << curr.h << endl;
     for (int i = 0; i < curr.board.size(); i++)
     {
         for (int j = 0; j < curr.board.size(); j++)
@@ -64,15 +63,6 @@ int get_h (Node newNode, Node curr, _2D &goal)
 {
     int curr_value = 0;
     int new_value = 0;
-    //int mod = 0;
-    /*if (goal.at(newNode.zero_index[0]).at(newNode.zero_index[1]) == curr.board.at(newNode.zero_index[0]).at(newNode.zero_index[1]))
-    {
-        mod = 1;
-    }
-    if (goal.at(curr.zero_index[0]).at(curr.zero_index[1]) == newNode.board.at(curr.zero_index[0]).at(curr.zero_index[1]))
-    {
-        mod = -1;
-    }*/
     for(int i = 0; i < newNode.board.size(); i++)
     {
         for(int j = 0; j < newNode.board.size(); j++)
@@ -88,25 +78,16 @@ int get_h (Node newNode, Node curr, _2D &goal)
         }
     }
     return curr.h + (new_value - curr_value);
-    //return curr.h + (new_value - curr_value) + mod;
 }
 
 int get_h(Node current, _2D &goal)
 {
     
     int sum = 0;
-    //int sum2 = 0;
-    //int lin_conflict = 0;
     for (int i = 0; i < goal.size(); i++)
     {
-        //int max_in_row = -1;
-        //int max_in_col = -1;
         for (int j = 0; j < goal.size(); j++)
         {
-            /*if (current.board.at(i).at(j) != goal.at(i).at(j) && current.board.at(i).at(j) != 0 && goal.at(i).at(j) != -1)
-            {
-                sum2 += 1;
-            }*/
             if (current.board.at(i).at(j) == 0)
             {
                 continue;
@@ -119,33 +100,8 @@ int get_h(Node current, _2D &goal)
                     {
                         sum += abs(k - i) + abs(l - j);
                         
-                        /*if (k - i == 0 && l - j != 0)
-                        {
-                            if (current.board.at(i).at(j) > max_in_row)
-                            {
-                                max_in_row = current.board.at(i).at(j);
-                            }
-                            else
-                            {
-                                lin_conflict += 2;
-                            }
-                        }*/
+                        
                     }
-                    //below checks for lin conflicts in same column by switching i and j
-                   /* else if (current.board.at(j).at(i) == goal.at(k).at(l) && goal.at(k).at(l) != -1)
-                    {
-                        if (k - j == 0 && l - i != 0)
-                        {
-                            if (current.board.at(j).at(i) > max_in_col)
-                            {
-                                max_in_col = current.board.at(j).at(i);
-                            }
-                            else
-                            {
-                                lin_conflict += 2;
-                            }
-                        }
-                    }*/
                     
                 }
             }
@@ -153,7 +109,6 @@ int get_h(Node current, _2D &goal)
         }
     }
 
-    //return sum + lin_conflict;
     return sum;
 }
 
@@ -203,7 +158,6 @@ inline Node * create_expand_node(Node * &curr, string move, _2D &new_board, _2D 
     newNode -> g = curr -> g + 1;
     newNode -> h = get_h(*newNode, *curr, goal);
     newNode -> f = newNode -> h + newNode -> g;
-    //cout << newNode -> f;
     newNode -> link = curr;
     newNode -> move = move;
     newNode -> limit = curr -> limit;
@@ -215,13 +169,11 @@ inline Node * create_expand_node(Node * &curr, string move, _2D &new_board, _2D 
 
 Node * expand(Node* &curr, _2D &goal)
 {
-    //cout << curr -> f << endl;
     int temp = 0;
     Node *min = new Node;
     min -> f = 100;
     if (curr -> f > curr -> limit )
     {
-        //cout << " limit exceeded in expand" << endl;
         return curr;
     }
     else if (curr -> h == 0)
@@ -238,7 +190,6 @@ Node * expand(Node* &curr, _2D &goal)
             swap(new_board[curr -> zero_index[0]][curr -> zero_index[1]], new_board[curr -> zero_index[0] + 1][curr -> zero_index[1]]);
             Node * newNode = create_expand_node(curr, "DOWN", new_board, goal);
             Node * solution = expand(newNode, goal);
-            //cout << "expand path finished" << endl;
             if (solution -> h == 0)
             {
                 return solution;
@@ -260,7 +211,6 @@ Node * expand(Node* &curr, _2D &goal)
             swap(new_board[curr -> zero_index[0]][curr -> zero_index[1]], new_board[curr -> zero_index[0] - 1][curr -> zero_index[1]]);
             Node * newNode = create_expand_node(curr, "UP", new_board, goal);
             Node * solution = expand(newNode, goal);
-            //cout << "expand path finished" << endl;
             if (solution -> h == 0)
             {
                 return solution;
@@ -282,7 +232,6 @@ Node * expand(Node* &curr, _2D &goal)
             swap(new_board[curr -> zero_index[0]][curr -> zero_index[1]], new_board[curr -> zero_index[0]][curr -> zero_index[1] + 1]);
             Node * newNode = create_expand_node(curr, "RIGHT", new_board, goal);
             Node * solution = expand(newNode, goal);
-            //cout << "expand path finished" << endl;
             if (solution -> h == 0)
             {
                 return solution;
@@ -303,7 +252,6 @@ Node * expand(Node* &curr, _2D &goal)
             swap(new_board[curr -> zero_index[0]][curr -> zero_index[1]], new_board[curr -> zero_index[0]][curr -> zero_index[1] - 1]);
             Node * newNode = create_expand_node(curr, "LEFT", new_board, goal);
             Node * solution = expand(newNode, goal);
-            //cout << "expand path finished" << endl;
             if (solution -> h == 0)
             {
                 return solution;
@@ -321,7 +269,6 @@ Node * expand(Node* &curr, _2D &goal)
         }
     }
     min -> limit = min -> f;
-    //display_board(*curr);
     return min;
 }
 
@@ -335,7 +282,6 @@ Node * ida(_2D &board, _2D &goal, Node* &init)
     root -> limit = init -> f;
     root -> prev_zero_index[0] = -1;
     root -> prev_zero_index[1] = -1;
-    //unordered_map <string, Node> open_map;
     
     for (int i = 0; i < board.size(); i++)
     {
@@ -352,11 +298,7 @@ Node * ida(_2D &board, _2D &goal, Node* &init)
     int count = 0;
     while (count < 10000)
     {
-        map <_2D, bool> visited;
-        //visited[root -> board] = true;
-        //solution = expand(root, goal, open_map);
         solution = expand(root, goal);
-        //display_board(*solution);
         
         if (solution -> limit == 100)
         {
@@ -398,14 +340,14 @@ int main()
             count += 1;
         }
     }
-    //display_board(board);
+
     Node * init = new Node;
     init -> board = board;
     init -> g = 0;
     init -> h = get_h(*init, goal);
     init -> f = init -> g + init -> h;
 
-    //cout << init -> h << endl;
+
     Node * solution = ida(board, goal, init);
     if (solution != nullptr)
     {
